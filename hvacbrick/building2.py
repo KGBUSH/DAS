@@ -11,7 +11,7 @@
 from rdflib import Graph, Literal
 from rdflib.plugins.sparql import prepareQuery
 
-from energon.indexing import Indexing
+from engine.indexing import Indexing
 from config import BUILDING_INDEX, SUB_FLAG
 from tools.basic import merge_dicts
 
