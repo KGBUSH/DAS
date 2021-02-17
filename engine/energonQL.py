@@ -7,13 +7,17 @@ import os
 import pandas as pd
 
 from hvacbrick.building import Building, BuildingSub
+from hvacbrick.building2 import Building2, Building2Sub
 from hvacbrick.misc import print_graph
+
+from tools.basic import TimeRecorder
+
 
 from data.dataset import Dataset
 
 __TRACE__ = False
 
-def getBuilding(BuildingID = None, Source = None):
+def getBuilding(BuildingID=None, Source=None):
     """
     retrive ontology from database
     and return building objects
@@ -27,20 +31,43 @@ def getBuilding(BuildingID = None, Source = None):
         g = Graph()
         ttl = "./ontology/" + BuildingID + ".ttl"
         if os.path.isfile(ttl):
-            g.parse(ttl, format = "turtle")
-        return Building(BuildingID, g)
+            g.parse(ttl, format="turtle")
+        # return Building(BuildingID, g, ttl_path=ttl)
+        return Building2(BuildingID, ttl_path=ttl)
+
+#
+# def evalAlgebra_bak(algebra, buildingDic):
+#     if __TRACE__:
+#         print("algebra:", algebra)
+#     if len(algebra) == 2:
+#         sub, building = algebra
+#         # SUBSYSTEM_LOOKUP is used to provide hints and constraints
+#         if sub.upper() in SUBSYSTEM_LOOKUP:
+#             return buildingDic[building].extract_subsys(sub)  # sub: 'VAV'
+#         else:
+#             return buildingDic[building].extract_functional(sub)
+#     left, op, right = algebra
+#     if op == '+':
+#         return evalAlgebra(left, buildingDic) + evalAlgebra(right, buildingDic)
+#     elif op == '-':
+#         return evalAlgebra(left, buildingDic) - evalAlgebra(right, buildingDic)
+#     elif op == '*':
+#         return evalAlgebra(left, buildingDic) * evalAlgebra(right, buildingDic)
 
 
 def evalAlgebra(algebra, buildingDic):
+    """
+    # buildingsDic:  {'B': {'BuildingID': 'ecp', 'Source': 'LOCAL'}}
+    """
     if __TRACE__:
         print("algebra:", algebra)
     if len(algebra) == 2:
         sub, building = algebra
         # SUBSYSTEM_LOOKUP is used to provide hints and constraints
         if sub.upper() in SUBSYSTEM_LOOKUP:
-            return buildingDic[building].extract_subsys(sub)
+            return buildingDic[building].extract_sub_system(sub)
         else:
-            return buildingDic[building].extract_functional(sub)
+            return buildingDic[building].extract_sub_functionality(sub)
     left, op, right = algebra
     if op == '+':
         return evalAlgebra(left, buildingDic) + evalAlgebra(right, buildingDic)
@@ -48,6 +75,8 @@ def evalAlgebra(algebra, buildingDic):
         return evalAlgebra(left, buildingDic) - evalAlgebra(right, buildingDic)
     elif op == '*':
         return evalAlgebra(left, buildingDic) * evalAlgebra(right, buildingDic)
+    elif op == '%':
+        return evalAlgebra(left, buildingDic) % evalAlgebra(right, buildingDic)
 
 def trace(b):
     global __TRACE__
@@ -86,6 +115,8 @@ def evalQuery(tokens):
     2. Extract data from ontology extration
     3. Post filter the sensor data
     """
+    time_recorder = TimeRecorder()
+    time_recorder.tick()
     length = len(tokens[0])
 
     if length == 1:
@@ -139,15 +170,23 @@ def evalQuery(tokens):
 
             if building in buildingsDic:
                 buildingsDic[building][kw] = arg
-    
+
+    # time_recorder.tock("Test building index started1 !")
     for building in buildingsDic:
-        args = buildingsDic[building]
+        args = buildingsDic[building]  # buildingsDic:  {'B': {'BuildingID': 'ecp', 'Source': 'LOCAL'}}
         buildingsDic[building] = getBuilding(**args)
 
     if __TRACE__:
         print("building lookups: ", buildingsDic)
-    
-    subontology = evalAlgebra(algebra, buildingsDic)
+
+    # algebra ([(['VAV', 'B'], {}), '*', ([(['Temperature', 'B'], {}), '+', (['Setpoint', 'B'], {})], {})], {})
+
+    time_recorder.tock("Test ontology loading Finished !")
+    for i in range(1):
+        subontology = evalAlgebra(algebra, buildingsDic)
+    time_recorder.tock("Test subontology Finished !")
+    print('\n\n')
+    return
     data, label = getData(subontology, labels)
 
     return data, label
@@ -159,6 +198,7 @@ building = Literal('Building') ^ Literal('SubBuilding')
 sub_extraction = Group(identifier + Literal('(').suppress() + delimitedList(identifier) + Literal(')').suppress()).setName('Subontology Extraction')
 algebra = infixNotation(sub_extraction,
                         [ ('-', 1, opAssoc.RIGHT),
+                          (oneOf('%'), 2, opAssoc.LEFT),
                           (oneOf('* /'), 2, opAssoc.LEFT),
                           (oneOf('+ -'), 2, opAssoc.LEFT) ]).setName('Algebra')
 buildings = Group(delimitedList(
@@ -204,7 +244,7 @@ class Energon(Cmd):
     def do_exit(self, inp):
         print("Bye")
         return True
-    
+
     def default(self, inp):
         print(energon(inp))
         return False

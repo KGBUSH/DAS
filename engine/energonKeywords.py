@@ -1,4 +1,5 @@
 from pyparsing import Keyword, MatchFirst
+from config import system_name_list
 
 SELECT = Keyword("SELECT", caseless = True)
 FROM = Keyword("FROM", caseless = True)
@@ -8,4 +9,4 @@ LABEL = Keyword("LABEL", caseless = True)
 AND = Keyword("AND", caseless = True)
 OR = Keyword("OR", caseless = True)
 
-SUBSYSTEM_LOOKUP = ["AHU", "CHILLER", "VAV", "ZONE", "WEATHER", "SOLAR_PANEL"]
+SUBSYSTEM_LOOKUP = system_name_list
