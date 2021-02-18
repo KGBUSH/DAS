@@ -1,4 +1,3 @@
-
 # use rdflib to load turtle file
 
 # use rdflib to write sparql query searching sensor uuid used for cop application
