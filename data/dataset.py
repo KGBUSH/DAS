@@ -1,7 +1,6 @@
 class Dataset():
     '''
     Core data set format.
-
     :parameter: None
     :rtype:HVAC_ToolKit.data.dataset.Dataset
     '''
