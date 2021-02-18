@@ -53,7 +53,7 @@ function_name_dict = {"TEMPERATURE": 'Temperature_Sensor',
 intra_type_list = [
     'hasPoint',
     # BF['hasPart'],
-    'isPointOf',  # todo 这种case：g.add((HK[returnTemp], BF['isPointOf'], HK[chiller]))； 理论上应该要在chiller里面对应的加上hasPoint returnTemp
+    'isPointOf',
     # BF['isPartOf']
 
 ]
@@ -63,13 +63,13 @@ inter_type_list = [
     'hasLocation'
 ]
 
-reverse_pairs_list = [  # 互为相反方向  # todo 何方说目前只有hasPoint没有hasPart
+reverse_pairs_list = [
     {'hasPoint', 'isPointOf'},
     # {BF['hasPart'], BF['isPartOf']}
 ]
 
-# Building Indexing 全局变量
+# Building Indexing global
 BUILDING_INDEX = {}
 
-# system 或者 functionality 标志位
+# system or functionality flag
 SUB_FLAG = {'system': 0, 'functionality': 1}

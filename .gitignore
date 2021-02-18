@@ -12,7 +12,7 @@
 !*.h
 !*.py
 !*.md
-
+README_Energon.md
 
 /test_rdf
 /ontology_generator

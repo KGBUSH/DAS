@@ -45,7 +45,7 @@ class Indexing:
         return spo_dict
 
     def make_completed_predicate(self, p):
-        """p 可能只是'hasPoint', 要转换成ttl里面的predicate """
+        """p maybe 'hasPoint', need to transform to the 'predicate' in ttl file """
         for value in self.spo_dict['p']:
             if p in value:
                 return value
@@ -75,9 +75,9 @@ class Indexing:
         for system_key, system_dict in self.index_system.items():
             for segment_name, segment_dict in system_dict.items():
                 # 3.1 intra edge
-                for p, down_list in segment_dict['intra'].items():  # edge的name和下游节点list（在Storage Table用list存）
+                for p, down_list in segment_dict['intra'].items():  # edge's name and downstream node list（save as list in Storage Table）
                     predicate = self.make_completed_predicate(p=p)
-                    if predicate:  # 可能没有
+                    if predicate:  # maybe None
                         for obj in self.g.objects(subject=segment_name, predicate=predicate):
                             down_list.append(obj)  # e.g. obj is Damper_1, Damper_2 in slides
                     # 反向筛查
@@ -88,7 +88,7 @@ class Indexing:
                             down_list.append(sub)
 
                 # 3.2 inter edge
-                for p, down_list in segment_dict['inter'].items():  # edge的name和下游节点list（在Storage Table用list存）
+                for p, down_list in segment_dict['inter'].items():
                     inter_results_list = []
                     predicate = self.make_completed_predicate(p=p)
                     multi_hop_traversal(g=self.g, subject0=segment_name, p=predicate, results_list=inter_results_list)
@@ -96,27 +96,27 @@ class Indexing:
 
     def build_func_index(self):
         """
-        functionality 的 索引
+        functionality index
         """
         # 1. layer: function
         for function_name in function_name_dict.keys():
             self.index_func.update({function_name: []}
                                    )
 
-        # 2. 直接list 存放 相关sensor
+        # 2. list to save corresponding sensor
         for function_name, value in self.index_func.items():
             sensor_type = function_name_dict[function_name]
             completed_sensor_type = None
 
-            # 找 sensor_type 的全名
+            # find sensor_type full name
             for obj in self.spo_dict['o']:
                 if sensor_type in obj:
                     completed_sensor_type = obj
                     break
 
-            if completed_sensor_type is None:  # 说明该building没有这个sensor_type
+            if completed_sensor_type is None:  # this if branch means no this sensor_type in building
                 continue
-            # 找'type' 的全名
+            # find 'type' full name
             rdf_type = None
             for p in self.spo_dict['p']:
                 if 'type' in p:

@@ -1,19 +1,15 @@
 from pyparsing import Group, delimitedList, Optional, Word, alphas, alphanums, quotedString, \
-    pyparsing_common, Forward, Literal, infixNotation, opAssoc, oneOf, empty
+    pyparsing_common, Literal, infixNotation, opAssoc, oneOf, empty
 from engine.engineKeywords import SELECT, FROM, WHERE, FILTER, LABEL, AND, OR, SUBSYSTEM_LOOKUP
 
 from rdflib import Graph
 import os
 import pandas as pd
 
-from hvacbrick.building import Building, BuildingSub
-from hvacbrick.building2 import Building2, Building2Sub
+from hvacbrick.building2 import Building2
 from hvacbrick.misc import print_graph
 
 from tools.basic import TimeRecorder
-
-
-from data.dataset import Dataset
 
 __TRACE__ = False
 
@@ -227,7 +223,6 @@ query = Group(
     ).addParseAction(evalQuery)
 
 def energon(q):
-    import sys
     from pyparsing import ParseException
     retv = None
     try:

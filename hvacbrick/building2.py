@@ -65,15 +65,15 @@ class Building2:
 
 class Building2Sub():
     """
-    subsystem，继承的主要原因是因为要用ttl文件名去找 building level的indexing
-    主要是index
+    subsystem
+    index
     """
 
     def __init__(self, building_id, sub_type, sys_func_flag, ttl_path, sub_index=None):
         """
         :parameter sub_type: e.g. 'VAV'
-        :parameter sys_func_flag: system或者functionality的标志位，(0system，1functionality)
-        :parameter sub_index: 该子系统的sub_index ，可以直接赋值
+        :parameter sys_func_flag:
+        :parameter sub_index: subsystem's sub_index ，can assign value directly
         """
         # super().__init__(building_id)
         self.building_id = building_id
@@ -82,13 +82,13 @@ class Building2Sub():
         self.ttl_path = ttl_path
         self.sys_func_flag = sys_func_flag
         if isinstance(sub_type, str):
-            self.sub_type_list = [sub_type.upper()]  # 大写字母
+            self.sub_type_list = [sub_type.upper()]
         else:
             self.sub_type_list = sub_type  # 最后 self.sub_type_list = []
 
         # 2. load sub's indexing
         if sub_index:
-            # 这种情况是初始化就给了sub_index，主要是在做运算的时候，先在__add__里面把index做好直接赋值
+            # this scenario is parameter `sub_index` not None; when operation, first get index from __add__(), and assign value directly
             self.sub_index = sub_index
         else:
             if self.sys_func_flag == SUB_FLAG['system']:
@@ -99,12 +99,12 @@ class Building2Sub():
             else:
                 self.sub_index = []
                 for sub_type in self.sub_type_list:
-                    sub_list = BUILDING_INDEX[self.ttl_path].index_func[sub_type]  # 和上面不一样，这里是list
+                    sub_list = BUILDING_INDEX[self.ttl_path].index_func[sub_type]  # list
                     self.sub_index.extend(sub_list)
 
     def __add__(self, other):
         """
-        子系统相加，我们不evaluate s+f
+        s+s，(now dont evaluate s+f
         """
         sub_type_list = []
         sub_type_list.extend(self.sub_type_list)
@@ -144,7 +144,7 @@ class Building2Sub():
 
     def __mul__(self, other):
         """
-        子系统相乘法，只考虑 s * f ,   (s * s很特殊，是join的下游例子，必须要两个s是相同type
+        only s * f ,   (s * s is special，is downstream of join，two s should be same type
         and result is `s * f =s`
         """
         sub_type_list = []
@@ -176,7 +176,7 @@ class Building2Sub():
         """
         符号是: %; 用于重载join
         """
-        self_feeds_entity_name = []  # 被self system feeds的所有entity name
+        self_feeds_entity_name = []  # all the entity name, which feeds by self system
 
         if self.sys_func_flag != SUB_FLAG['system'] or other.sys_func_flag != SUB_FLAG['system']:
             raise TypeError("__join__ error: ")
@@ -200,7 +200,8 @@ class Building2Sub():
 
 def system_mul_func(s, f):
     """
-    只针对 s*f, 都是Building2Sub的对象
+    only for s*f,
+    both are objective of Building2Sub
     """
     the_system_index_dict = s.sub_index.copy()  # dict in `system`
     for segment_name, segment_dict in the_system_index_dict.items():

@@ -18,20 +18,20 @@ def find_inverse_predicate(p):
             s_tmp = s.copy()
             s_tmp.remove(p)
             return s_tmp.pop()
-    return None  # 不是所有predicate都有相反值
+    return None  # not all predicate has inverse value
 
 
-def multi_hop_traversal(g, subject0, p, results_list):  # todo 需要测试
+def multi_hop_traversal(g, subject0, p, results_list):
     """
-    根据（跨system的）predicate，找到初始subject0能到达的所有system
-    subject0: 遍历的初始节点
+    based on（across system）predicate，find all system that initial subject0 can visit
+    subject0: initial node while traverse
     """
     # 3.2 inter edge
-    # for predicate, down_list in segment_dict['inter'].items():  # edge的name和下游节点list（在Storage Table用list存）
+    # for predicate, down_list in segment_dict['inter'].items():  # edge's name and downstream list（ save as lsit in Storage Table）
     for obj in g.objects(subject=subject0, predicate=p):
         results_list.append(obj)
-        # 递归寻找
-        multi_hop_traversal(g=g, subject0=obj, p=p, results_list=results_list)  # 第二个参数
+        # recursively
+        multi_hop_traversal(g=g, subject0=obj, p=p, results_list=results_list)  # the second parameter
 
 
 def merge_dicts(*dict_args):

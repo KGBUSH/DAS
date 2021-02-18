@@ -42,8 +42,3 @@ energon(query_chiller)
 # engine(fdd_for_ahu_query)  # 0.000088s  0.000075s  0.000074s
 # engine(bic_query)
 
-"""
-只和 query这句话的长短有关，和operator使用类型五官
-
-"""
-
