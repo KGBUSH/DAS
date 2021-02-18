@@ -1,4 +1,4 @@
-# Energon
+# DAS
 
 ## Installation
 
@@ -37,11 +37,12 @@ Assumption:
 1. Write SparQL query extracting metadata from the ontology definition
 2. With the SparQL query result, use UUID associated with the sensor and extract corresponding features from raw data
 
-### Energon approach
+### DAS approach
 
-Write EnergonQL query to extract the features needed
+Write DASQL query to extract the features needed
 
-The Energon query language, **EnergonQL**, following the concept of object database, can be defined as ***select-from-where*** expressions. The syntax of is as follows:
+The DAS query language, **DAS**, following the concept of object database, can be defined as ***select-from-where*** expressions. The syntax of
+ is as follows:
 
 
 **SELECT** *ontology algebra* \
@@ -67,7 +68,7 @@ ontology algebra are composed by applying set operators union(+), difference(-),
 
 A typical example of the ontology algebra is: `Chiller(B) + AHU(B)`. This means I am taking all the node related to chiller union AHU from building `B`. And `Chiller(B) * Temperature(B)` means I am taking all the temperature node from the Chiller group in the Building `B`.
 
-**Your task is to use building elements and algebra operators in EnergonQL to extract the data needed for the application.**
+**Your task is to use building elements and algebra operators in DAS QL to extract the data needed for the application.**
 
 
 ## Application 1. COP prediction
