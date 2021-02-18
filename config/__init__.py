@@ -28,25 +28,6 @@ function_name_dict = {"TEMPERATURE": 'Temperature_Sensor',
                       'LUMINANCE': "Luminance_Sensor",
                       'POWER': "Power_Sensor"
                       }
-# # definition of predicates (edges)
-# intra_type_list = [
-#     BF['hasPoint'],
-#     BF['hasPart'],
-#     BF['isPointOf'],  # todo 这种case：g.add((HK[returnTemp], BF['isPointOf'], HK[chiller]))； 理论上应该要在chiller里面对应的加上hasPoint returnTemp
-#     BF['isPartOf']
-#
-# ]
-#
-#
-#
-# inter_type_list = [
-#     BF['feeds']
-# ]
-#
-# reverse_pairs_list = [  # 互为相反方向  # todo 需要及时更新
-#     {BF['hasPoint'], BF['isPointOf']},
-#     {BF['hasPart'], BF['isPartOf']}
-# ]
 
 
 # definition of predicates (edges)

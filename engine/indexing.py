@@ -80,7 +80,7 @@ class Indexing:
                     if predicate:  # maybe None
                         for obj in self.g.objects(subject=segment_name, predicate=predicate):
                             down_list.append(obj)  # e.g. obj is Damper_1, Damper_2 in slides
-                    # 反向筛查
+                    # Reverse screening
                     inverse_p = find_inverse_predicate(p=p)
                     inverse_predicate = self.make_completed_predicate(p=inverse_p)
                     if inverse_predicate:
