@@ -12,3 +12,11 @@
 !*.h
 !*.py
 !*.md
+
+
+/test_rdf
+/ontology_generator
+/draw
+/data
+/test_rdf
+/bak
