@@ -18,12 +18,12 @@ from tools.basic import merge_dicts
 
 def load_building_index(ttl_path):
     """
-    index管理器
+    index manager
     """
     if ttl_path in BUILDING_INDEX:
         return BUILDING_INDEX[ttl_path]
     else:
-        building_index = Indexing(ttl_file_path=ttl_path)  # 读入整个楼的Indexing
+        building_index = Indexing(ttl_file_path=ttl_path)  # load the whole building's Indexing
         BUILDING_INDEX[ttl_path] = building_index
         return BUILDING_INDEX[ttl_path]
 
@@ -32,35 +32,34 @@ class Building2:
 
     def __init__(self, building_id, ttl_path=None):
         """
-        buildingID 也是ttl 文件名
+        buildingID is ttl file name
         """
         self.building_index = None
         self.ttl_path = ttl_path
         if self.ttl_path:
-            # 子类的构造函数不需要传入ttl_path, 不执行 load_building_index
             self.building_index = load_building_index(ttl_path=self.ttl_path)
 
         self.building_id = building_id
 
     def extract_sub_system(self, subsystem):
         """
-        根据 system name取出下面segment list
+        base on system name, fetch segment list
         """
         sub_system = Building2Sub(building_id=self.building_id,
                                   sub_type=subsystem,
                                   sys_func_flag=SUB_FLAG['system'],
                                   ttl_path=self.ttl_path)
-        return sub_system  # 对象
+        return sub_system
 
     def extract_sub_functionality(self, subsystem):
         """
-        根据 system name取出下面segment list
+        based on system name, fetch segment list
         """
         sub_func = Building2Sub(building_id=self.building_id,
                                 sub_type=subsystem,
                                 sys_func_flag=SUB_FLAG['functionality'],
                                 ttl_path=self.ttl_path)
-        return sub_func  # 对象
+        return sub_func
 
 
 class Building2Sub():
@@ -78,13 +77,13 @@ class Building2Sub():
         # super().__init__(building_id)
         self.building_id = building_id
 
-        # 1. 初始化
+        # 1. initialization
         self.ttl_path = ttl_path
         self.sys_func_flag = sys_func_flag
         if isinstance(sub_type, str):
             self.sub_type_list = [sub_type.upper()]
         else:
-            self.sub_type_list = sub_type  # 最后 self.sub_type_list = []
+            self.sub_type_list = sub_type  # finally self.sub_type_list = []
 
         # 2. load sub's indexing
         if sub_index:
@@ -174,7 +173,7 @@ class Building2Sub():
 
     def __mod__(self, other):
         """
-        符号是: %; 用于重载join
+        %; used to overwrite join
         """
         self_feeds_entity_name = []  # all the entity name, which feeds by self system
 
