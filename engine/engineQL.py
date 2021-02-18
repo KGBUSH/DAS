@@ -1,6 +1,6 @@
 from pyparsing import Group, delimitedList, Optional, Word, alphas, alphanums, quotedString, \
     pyparsing_common, Forward, Literal, infixNotation, opAssoc, oneOf, empty
-from engine.energonKeywords import SELECT, FROM, WHERE, FILTER, LABEL, AND, OR, SUBSYSTEM_LOOKUP
+from engine.engineKeywords import SELECT, FROM, WHERE, FILTER, LABEL, AND, OR, SUBSYSTEM_LOOKUP
 
 from rdflib import Graph
 import os
